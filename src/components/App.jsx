@@ -31,18 +31,25 @@ class App extends Component {
     console.log(this.state.page);
   };
 
-  async componentDidMount() {
-    const response = await axios.get(
-      `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-    );
-    this.setState({ photos: response.data.hits });
-  }
+  // async componentDidMount() {
+  //   const response = await axios.get(
+  //     `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+  //   );
+  //   this.setState({ photos: response.data.hits });
+  // }
 
-  async componentDidUpdate() {
-    const response = await axios.get(
-      `?q=${this.state.query}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-    );
-    this.setState({ photos: response.data.hits });
+  async componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.query !== this.state.query ||
+      prevState.page !== this.state.page
+    ) {
+      const response = await axios.get(
+        `?q=${this.state.query}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+      );
+      this.setState(prevState => ({
+        photos: [...prevState.photos, ...response.data.hits],
+      }));
+    }
   }
 
   render() {
