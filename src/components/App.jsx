@@ -20,14 +20,15 @@ class App extends Component {
   onSubmit = value => {
     this.setState({
       query: value,
+      page: 1,
     });
   };
 
   onMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
     console.log(this.state.page);
-    this.setState({
-      page: 2,
-    });
   };
 
   async componentDidMount() {
@@ -48,9 +49,13 @@ class App extends Component {
     return (
       <div>
         <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery>
-          <ImageGalleryItem photos={this.state.photos} />
-        </ImageGallery>
+        {this.state.query.length > 0 ? (
+          <ImageGallery>
+            <ImageGalleryItem photos={this.state.photos} />
+          </ImageGallery>
+        ) : (
+          ''
+        )}
         <Button onClick={this.onMore} />
       </div>
     );
