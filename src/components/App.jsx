@@ -6,6 +6,7 @@ import ImageGallery from './ImageGallery';
 import Button from './Button';
 import { Component } from 'react';
 import axios from 'axios';
+import css from './App.module.css';
 
 const API_KEY = '33215953-674c55a945dec9bfe68981b61';
 axios.defaults.baseURL = 'https://pixabay.com/api/';
@@ -17,6 +18,7 @@ class App extends Component {
     page: 1,
     loadMore: false,
     isLoading: false,
+    showModal: false,
   };
 
   onSubmit = value => {
@@ -34,13 +36,18 @@ class App extends Component {
     }));
   };
 
-  async componentDidMount() {
-    console.log('mount');
-    // const response = await axios.get(
-    //   `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-    // );
-    // this.setState({ photos: response.data.hits });
-  }
+  showModal = () => {
+    console.log('modal');
+    this.setState({ showModal: true });
+  };
+
+  // async componentDidMount() {
+  //   console.log('mount');
+  // const response = await axios.get(
+  //   `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+  // );
+  // this.setState({ photos: response.data.hits });
+  // }
 
   async componentDidUpdate(prevProps, prevState) {
     if (
@@ -60,11 +67,15 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className={css.App}>
         <Searchbar onSubmit={this.onSubmit} />
         {this.state.query.length > 0 ? (
           <ImageGallery>
-            <ImageGalleryItem photos={this.state.photos} />
+            <ImageGalleryItem
+              photos={this.state.photos}
+              onClick={this.showModal}
+            />
+            {this.state.showModal && <Modal />}
             {this.state.isLoading && <Loader />}
           </ImageGallery>
         ) : (
