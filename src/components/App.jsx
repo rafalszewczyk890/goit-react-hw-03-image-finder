@@ -62,6 +62,10 @@ class App extends Component {
       const response = await axios.get(
         `?q=${this.state.query}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
       );
+      if (response.data.hits.length < 12) {
+        console.log(response.data.hits.length);
+        this.setState({ loadMore: false });
+      }
       this.setState(prevState => ({
         photos: [...prevState.photos, ...response.data.hits],
         isLoading: false,
