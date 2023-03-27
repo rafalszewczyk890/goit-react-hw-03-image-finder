@@ -15,12 +15,16 @@ class App extends Component {
     photos: [],
     query: '',
     page: 1,
+    loadMore: false,
+    isLoading: false,
   };
 
   onSubmit = value => {
     this.setState({
       query: value,
       page: 1,
+      loadMore: true,
+      photos: [],
     });
   };
 
@@ -28,26 +32,28 @@ class App extends Component {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
-    console.log(this.state.page);
   };
 
-  // async componentDidMount() {
-  //   const response = await axios.get(
-  //     `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-  //   );
-  //   this.setState({ photos: response.data.hits });
-  // }
+  async componentDidMount() {
+    console.log('mount');
+    // const response = await axios.get(
+    //   `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+    // );
+    // this.setState({ photos: response.data.hits });
+  }
 
   async componentDidUpdate(prevProps, prevState) {
     if (
       prevState.query !== this.state.query ||
       prevState.page !== this.state.page
     ) {
+      this.setState({ isLoading: true });
       const response = await axios.get(
         `?q=${this.state.query}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
       );
       this.setState(prevState => ({
         photos: [...prevState.photos, ...response.data.hits],
+        isLoading: false,
       }));
     }
   }
@@ -59,11 +65,12 @@ class App extends Component {
         {this.state.query.length > 0 ? (
           <ImageGallery>
             <ImageGalleryItem photos={this.state.photos} />
+            {this.state.isLoading && <Loader />}
           </ImageGallery>
         ) : (
           ''
         )}
-        <Button onClick={this.onMore} />
+        {this.state.loadMore && <Button onClick={this.onMore} />}
       </div>
     );
   }
