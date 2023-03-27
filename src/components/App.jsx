@@ -6,7 +6,7 @@ import ImageGallery from './ImageGallery';
 import Button from './Button';
 import { Component } from 'react';
 import css from './App.module.css';
-import fetchPhotos from './api/api';
+import fetchPhotos from './services/api';
 
 class App extends Component {
   state = {
@@ -41,14 +41,6 @@ class App extends Component {
   modalClose = () => {
     this.setState({ showModal: false });
   };
-
-  // async componentDidMount() {
-  //   console.log('mount');
-  // const response = await axios.get(
-  //   `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-  // );
-  // this.setState({ photos: response.data.hits });
-  // }
 
   async componentDidUpdate(prevProps, prevState) {
     if (
