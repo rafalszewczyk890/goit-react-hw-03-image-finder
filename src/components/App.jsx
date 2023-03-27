@@ -5,11 +5,8 @@ import ImageGalleryItem from './ImageGalleryItem';
 import ImageGallery from './ImageGallery';
 import Button from './Button';
 import { Component } from 'react';
-import axios from 'axios';
 import css from './App.module.css';
-
-const API_KEY = '33215953-674c55a945dec9bfe68981b61';
-axios.defaults.baseURL = 'https://pixabay.com/api/';
+import fetchPhotos from './api/api';
 
 class App extends Component {
   state = {
@@ -59,9 +56,8 @@ class App extends Component {
       prevState.page !== this.state.page
     ) {
       this.setState({ isLoading: true });
-      const response = await axios.get(
-        `?q=${this.state.query}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-      );
+      const response = await fetchPhotos(this.state.query, this.state.page);
+      console.log(response);
       if (response.data.hits.length < 12) {
         console.log(response.data.hits.length);
         this.setState({ loadMore: false });
