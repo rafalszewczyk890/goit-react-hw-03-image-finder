@@ -5,22 +5,26 @@ import ImageGalleryItem from './ImageGalleryItem';
 import ImageGallery from './ImageGallery';
 import Button from './Button';
 import { Component } from 'react';
-import axios from 'axios';
-
-const API_KEY = '33215953-674c55a945dec9bfe68981b61';
-axios.defaults.baseURL = 'https://pixabay.com/api/';
+import css from './App.module.css';
+import fetchPhotos from './api/api';
 
 class App extends Component {
   state = {
     photos: [],
     query: '',
     page: 1,
+    loadMore: false,
+    isLoading: false,
+    showModal: false,
+    modalImg: null,
   };
 
   onSubmit = value => {
     this.setState({
       query: value,
       page: 1,
+      loadMore: true,
+      photos: [],
     });
   };
 
@@ -28,35 +32,62 @@ class App extends Component {
     this.setState(prevState => ({
       page: prevState.page + 1,
     }));
-    console.log(this.state.page);
   };
 
-  async componentDidMount() {
-    const response = await axios.get(
-      `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-    );
-    this.setState({ photos: response.data.hits });
-  }
+  showModal = source => {
+    this.setState({ showModal: true, modalImg: source });
+  };
 
-  async componentDidUpdate() {
-    const response = await axios.get(
-      `?q=${this.state.query}&page=${this.state.page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
-    );
-    this.setState({ photos: response.data.hits });
+  modalClose = () => {
+    this.setState({ showModal: false });
+  };
+
+  // async componentDidMount() {
+  //   console.log('mount');
+  // const response = await axios.get(
+  //   `?q=${this.state.query}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
+  // );
+  // this.setState({ photos: response.data.hits });
+  // }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (
+      prevState.query !== this.state.query ||
+      prevState.page !== this.state.page
+    ) {
+      this.setState({ isLoading: true });
+      const response = await fetchPhotos(this.state.query, this.state.page);
+      console.log(response);
+      if (response.data.hits.length < 12) {
+        console.log(response.data.hits.length);
+        this.setState({ loadMore: false });
+      }
+      this.setState(prevState => ({
+        photos: [...prevState.photos, ...response.data.hits],
+        isLoading: false,
+      }));
+    }
   }
 
   render() {
     return (
-      <div>
+      <div className={css.App}>
         <Searchbar onSubmit={this.onSubmit} />
         {this.state.query.length > 0 ? (
           <ImageGallery>
-            <ImageGalleryItem photos={this.state.photos} />
+            <ImageGalleryItem
+              photos={this.state.photos}
+              onClick={this.showModal}
+            />
+            {this.state.showModal && (
+              <Modal onClick={this.modalClose} source={this.state.modalImg} />
+            )}
+            {this.state.isLoading && <Loader />}
           </ImageGallery>
         ) : (
           ''
         )}
-        <Button onClick={this.onMore} />
+        {this.state.loadMore && <Button onClick={this.onMore} />}
       </div>
     );
   }
