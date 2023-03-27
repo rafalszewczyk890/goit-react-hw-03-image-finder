@@ -1,10 +1,10 @@
 import { Component } from 'react';
 import css from './Searchbar.module.css';
+import PropTypes from 'prop-types';
 
 class Searchbar extends Component {
   onSubmit = event => {
     event.preventDefault();
-    console.log(event.target[1].value);
     this.props.onSubmit(event.target[1].value);
   };
 
@@ -28,5 +28,9 @@ class Searchbar extends Component {
     );
   }
 }
+
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
 
 export default Searchbar;

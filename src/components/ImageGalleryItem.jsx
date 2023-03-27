@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import css from './ImageGalleryItem.module.css';
 
+
 class ImageGalleryItem extends Component {
   render() {
     return this.props.photos.map(photo => (

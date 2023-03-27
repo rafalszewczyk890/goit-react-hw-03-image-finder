@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { Blocks } from 'react-loader-spinner';
 
+
 class Loader extends Component {
   render() {
     return (

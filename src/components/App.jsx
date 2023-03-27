@@ -7,6 +7,7 @@ import Button from './Button';
 import { Component } from 'react';
 import css from './App.module.css';
 import fetchPhotos from './services/api';
+import PropTypes from 'prop-types';
 
 class App extends Component {
   state = {
@@ -84,5 +85,12 @@ class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  onMore: PropTypes.func.isRequired,
+  showModal: PropTypes.func.isRequired,
+  modalClose: PropTypes.func.isRequired,
+};
 
 export default App;
