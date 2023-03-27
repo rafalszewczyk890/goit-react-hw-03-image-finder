@@ -8,7 +8,9 @@ class ImageGalleryItem extends Component {
         <img
           src={photo.webformatURL}
           alt={photo.tags}
-          onClick={this.props.onClick}
+          onClick={() => {
+            this.props.onClick(photo.largeImageURL);
+          }}
           className={css.ImageGalleryItemImage}
         />
       </li>

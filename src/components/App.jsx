@@ -19,6 +19,7 @@ class App extends Component {
     loadMore: false,
     isLoading: false,
     showModal: false,
+    modalImg: null,
   };
 
   onSubmit = value => {
@@ -36,9 +37,12 @@ class App extends Component {
     }));
   };
 
-  showModal = () => {
-    console.log('modal');
-    this.setState({ showModal: true });
+  showModal = source => {
+    this.setState({ showModal: true, modalImg: source });
+  };
+
+  modalClose = () => {
+    this.setState({ showModal: false });
   };
 
   // async componentDidMount() {
@@ -75,7 +79,9 @@ class App extends Component {
               photos={this.state.photos}
               onClick={this.showModal}
             />
-            {this.state.showModal && <Modal />}
+            {this.state.showModal && (
+              <Modal onClick={this.modalClose} source={this.state.modalImg} />
+            )}
             {this.state.isLoading && <Loader />}
           </ImageGallery>
         ) : (
